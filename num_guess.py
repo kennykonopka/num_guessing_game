@@ -11,6 +11,7 @@ class Game():
         self.high = 0
 
     def play(self):
+        #First, determine difficulty
         print("Welcome!, To begin, select a difficulty: easy, medium, or hard")
         string = False
         while not string:
@@ -25,17 +26,23 @@ class Game():
         self.max_guesses = self.set_difficulty(diff)[1]
         self.high = self.set_difficulty(diff)[0]
 
+        #Determine random number
         self.num = random.randint(self.low, self.high)
 
+        #While loop to check guesses
         while self.guesses < self.max_guesses:
             guess = self.get_guess()
             self.guesses += 1
-
-            if self.check_guess(guess):
+    
+            if self.check_guess is "exact":
                 print(f"You won in {self.guesses} attempts!")
                 return
-
-
+            elif self.check_guess is "less":
+                print(f"Your guess of {guess} is too low.")
+            elif self.check_guess is "greater":
+                print(f"Your guess of {guess} is too low.")
+                
+    #Function to receive guess input
     def get_guess(self):
         while True:
             try:
@@ -44,11 +51,16 @@ class Game():
             except ValueError:
                 print("Invalid input. Try again.")
 
-    def check_guess(self, guess)
+    #Function to check guess    
+    def check_guess(self, guess):
         if guess == self.num:
-            return True
-        return False
+            return "exact"
+        elif guess < self.num:
+            return "less"
+        elif guess > self.num:
+            return "greater"
 
+    #Function to set difficulty
     def set_difficulty(self, diff):
         diff = diff.lower()
 
