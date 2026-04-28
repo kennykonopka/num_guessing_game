@@ -4,7 +4,7 @@ import random
 
 class Game():
 
-    def init(self, diff = "easy"):
+    def __init__(self, diff = "easy"):
         self.max_guesses = None
         self.guesses = 0
         self.low = 1
@@ -15,13 +15,12 @@ class Game():
         print("Welcome!, To begin, select a difficulty: easy, medium, or hard")
         string = False
         while not string:
-            diff = (input("Enter difficulty:"))
-            if isinstance(diff,str):
-                diff = diff.lower()
-            else:
-                "Please input a valid difficulty: easy, medium, or hard"
-            if diff is "easy" or "medium" or "hard":
+            diff = (input("Enter difficulty:")).lower()
+
+            if diff in ["easy", "medium", "hard"]:
                 string = True
+            else:
+                print("Please input a valid difficulty: easy, medium, or hard")
 
         self.max_guesses = self.set_difficulty(diff)[1]
         self.high = self.set_difficulty(diff)[0]
@@ -33,15 +32,22 @@ class Game():
         while self.guesses < self.max_guesses:
             guess = self.get_guess()
             self.guesses += 1
-    
-            if self.check_guess is "exact":
+            
+            #Winner logic
+            if self.check_guess(guess) == "exact":
                 print(f"You won in {self.guesses} attempts!")
+                self.play_again()
                 return
-            elif self.check_guess is "less":
+            #Check high/low
+            elif self.check_guess(guess) == "less":
                 print(f"Your guess of {guess} is too low.")
-            elif self.check_guess is "greater":
-                print(f"Your guess of {guess} is too low.")
-                
+            elif self.check_guess(guess) == "greater":
+                print(f"Your guess of {guess} is too high.")
+        
+        #Loser logic
+        print(f"You ran out of guesses! You lose! The number was: {self.num}")
+        self.play_again()
+
     #Function to receive guess input
     def get_guess(self):
         while True:
@@ -67,3 +73,14 @@ class Game():
         diff_levels = {"easy": [100, 10], "medium": [300, 15], "hard" : [1000,20]}
 
         return diff_levels[diff]
+    
+    def play_again(self):
+        again = input("Play again? Yes or no")
+        again = again.lower()
+        if again == "yes":
+            new_game = Game()
+            new_game.play()
+
+if __name__ == "__main__":
+    game = Game()
+    game.play()
