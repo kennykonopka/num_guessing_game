@@ -1,13 +1,13 @@
 #Number Guessing Game
 #Features num guessing game with levels ranging from easy, to medium, to hard
-
+import random
 
 class Game():
 
     def init(self, diff = "easy"):
         self.max_guesses = None
         self.guesses = 0
-        self.low = 0
+        self.low = 1
         self.high = 0
 
     def play(self):
@@ -25,9 +25,15 @@ class Game():
         self.max_guesses = self.set_difficulty(diff)[1]
         self.high = self.set_difficulty(diff)[0]
 
+        self.num = random.randint(self.low, self.high)
+
         while self.guesses < self.max_guesses:
             guess = self.get_guess()
-        
+            self.guesses += 1
+
+            if self.check_guess(guess):
+                print(f"You won in {self.guesses} attempts!")
+                return
 
 
     def get_guess(self):
@@ -38,6 +44,10 @@ class Game():
             except ValueError:
                 print("Invalid input. Try again.")
 
+    def check_guess(self, guess)
+        if guess == self.num:
+            return True
+        return False
 
     def set_difficulty(self, diff):
         diff = diff.lower()
