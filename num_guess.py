@@ -4,7 +4,8 @@ import random
 
 class Game():
 
-    def __init__(self, diff = "easy"):
+    def __init__(self, board):
+        self.board = board
         self.max_guesses = None
         self.guesses = 0
         self.low = 1
@@ -34,14 +35,18 @@ class Game():
             self.guesses += 1
             
             #Winner logic
-            if self.check_guess(guess) == "exact":
+            result = self.check_guess(guess)
+            if result == "exact":
                 print(f"You won in {self.guesses} attempts!")
+                name = input("Enter your name: ")
+                self.board.add(name, self.guesses)
+                self.board.display()
                 self.play_again()
                 return
             #Check high/low
-            elif self.check_guess(guess) == "less":
+            elif result == "less":
                 print(f"Your guess of {guess} is too low.")
-            elif self.check_guess(guess) == "greater":
+            elif result == "greater":
                 print(f"Your guess of {guess} is too high.")
         
         #Loser logic
@@ -55,7 +60,7 @@ class Game():
                 guess = int(input(f"Enter a number ({self.low}-{self.high}): "))
                 return guess
             except ValueError:
-                print("Invalid input. Try again.")
+                print("Invalid input. Try again. \n")
 
     #Function to check guess    
     def check_guess(self, guess):
@@ -75,12 +80,40 @@ class Game():
         return diff_levels[diff]
     
     def play_again(self):
-        again = input("Play again? Yes or no")
+        again = input("Play again? Yes or no \n")
         again = again.lower()
         if again == "yes":
-            new_game = Game()
+            new_game = Game(self.board)
             new_game.play()
 
+class Leaderboard():
+
+    def __init__(self):
+        self.leaders = {}
+    
+    #adds scores
+    def add(self, name, guesses):
+        if name in self.leaders:
+            if guesses < self.leaders[name]:
+                self.leaders[name] = guesses
+        else:
+            self.leaders[name] = guesses
+
+    # Display leaderboard
+    def display(self):
+
+        print("\nLeaderboard")
+
+        # Sort by lowest guesses
+        sorted_leaders = sorted(self.leaders.items(), key=lambda x: x[1])
+
+        for name, guesses in sorted_leaders[:3]:
+            print(f"{name}: {guesses} guesses")
+
+        print("\n")
+
 if __name__ == "__main__":
-    game = Game()
+    board = Leaderboard()
+    game = Game(board)
     game.play()
+    
