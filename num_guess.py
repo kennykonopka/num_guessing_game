@@ -10,6 +10,7 @@ class Game():
         self.guesses = 0
         self.low = 1
         self.high = 0
+        self.difficulty = None
 
     def play(self):
         #First, determine difficulty
@@ -19,6 +20,7 @@ class Game():
             diff = (input("Enter difficulty:")).lower()
 
             if diff in ["easy", "medium", "hard"]:
+                self.difficulty = diff
                 string = True
             else:
                 print("Please input a valid difficulty: easy, medium, or hard")
@@ -39,8 +41,8 @@ class Game():
             if result == "exact":
                 print(f"You won in {self.guesses} attempts!")
                 name = input("Enter your name: ")
-                self.board.add(name, self.guesses)
-                self.board.display()
+                self.board.add(name, self.guesses,self.difficulty)
+                self.board.display(self.difficulty)
                 self.play_again()
                 return
             #Check high/low
@@ -89,25 +91,32 @@ class Game():
 class Leaderboard():
 
     def __init__(self):
-        self.leaders = {}
+        self.leaders = {
+            "easy": {},
+            "medium": {},
+            "hard": {}
+        }
     
     #adds scores
-    def add(self, name, guesses):
-        if name in self.leaders:
-            if guesses < self.leaders[name]:
-                self.leaders[name] = guesses
+    def add(self, name, guesses, difficulty):
+
+        board = self.leaders[difficulty]
+
+        # Keep only best score
+        if name in board:
+            if guesses < board[name]:
+                board[name] = guesses
         else:
-            self.leaders[name] = guesses
+            board[name] = guesses
 
     # Display leaderboard
-    def display(self):
+    def display(self, difficulty):
 
-        print("\nLeaderboard")
+        print(f"\n{difficulty} Leaderboard:")
 
-        # Sort by lowest guesses
-        sorted_leaders = sorted(self.leaders.items(), key=lambda x: x[1])
+        board = sorted(self.leaders[difficulty].items(), key=lambda x: x[1])
 
-        for name, guesses in sorted_leaders[:3]:
+        for name, guesses in board[:3]:
             print(f"{name}: {guesses} guesses")
 
         print("\n")
