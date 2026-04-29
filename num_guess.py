@@ -57,6 +57,7 @@ class Game():
 
     #Function to receive guess input
     def get_guess(self):
+        print(f"Number or guesses: {self.guesses}")
         while True:
             try:
                 guess = int(input(f"Enter a number ({self.low}-{self.high}): "))
@@ -77,7 +78,7 @@ class Game():
     def set_difficulty(self, diff):
         diff = diff.lower()
 
-        diff_levels = {"easy": [100, 10], "medium": [300, 15], "hard" : [1000,20]}
+        diff_levels = {"easy": [100, 10], "medium": [300, 12], "hard" : [1000,15]}
 
         return diff_levels[diff]
     
@@ -102,20 +103,22 @@ class Leaderboard():
 
         board = self.leaders[difficulty]
 
-        # Keep only best score
+        #keeps only best score
         if name in board:
             if guesses < board[name]:
                 board[name] = guesses
         else:
             board[name] = guesses
 
-    # Display leaderboard
+    #display leaderboard
     def display(self, difficulty):
 
         print(f"\n{difficulty} Leaderboard:")
 
+        #sorts by lowest number of guesses
         board = sorted(self.leaders[difficulty].items(), key=lambda x: x[1])
 
+        #shows top 3 on leaderboard
         for name, guesses in board[:3]:
             print(f"{name}: {guesses} guesses")
 
