@@ -11,6 +11,7 @@ class Game():
         self.low = 1
         self.high = 0
         self.difficulty = None
+        self.prev_guesses = []
 
     def play(self):
         #First, determine difficulty
@@ -35,11 +36,12 @@ class Game():
         while self.guesses < self.max_guesses:
             guess = self.get_guess()
             self.guesses += 1
-            
+            self.prev_guesses.append(guess)
+
             #Winner logic
             result = self.check_guess(guess)
             if result == "exact":
-                print(f"You won in {self.guesses} attempts!")
+                print(f"Guesses: {self.prev_guesses}\nYou won in {self.guesses} attempts!")
                 name = input("Enter your name: ")
                 self.board.add(name, self.guesses,self.difficulty)
                 self.board.display(self.difficulty)
@@ -52,7 +54,7 @@ class Game():
                 print(f"Your guess of {guess} is too high.")
         
         #Loser logic
-        print(f"You ran out of guesses! You lose! The number was: {self.num}")
+        print(f"Guesses: {self.prev_guesses} \nYou ran out of guesses! You lose! The number was: {self.num}")
         self.play_again()
 
     #Function to receive guess input
@@ -83,11 +85,17 @@ class Game():
         return diff_levels[diff]
     
     def play_again(self):
-        again = input("Play again? Yes or no \n")
-        again = again.lower()
-        if again == "yes":
-            new_game = Game(self.board)
-            new_game.play()
+        while True:
+            again = input("Play again? Yes or no \n")
+            again = again.lower()
+            if again == "yes":
+                new_game = Game(self.board)
+                new_game.play()
+                return
+            elif again == "no":
+                return
+            else:
+                print("Invalid input. Please type yes or no")
 
 class Leaderboard():
 
@@ -113,7 +121,7 @@ class Leaderboard():
     #display leaderboard
     def display(self, difficulty):
 
-        print(f"\n{difficulty} Leaderboard:")
+        print(f"\n{difficulty} leaderboard:")
 
         #sorts by lowest number of guesses
         board = sorted(self.leaders[difficulty].items(), key=lambda x: x[1])
@@ -129,3 +137,4 @@ if __name__ == "__main__":
     game = Game(board)
     game.play()
     
+#FINAL PRODUCT
